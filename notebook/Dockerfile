@@ -6,6 +6,8 @@ USER root
 RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN yum clean all && yum repolist
 
+--enablerepo=rhel-7-server-e4s-optional-rpms
+
 #### Default PATH ####
 
 ENV CUDA_HOME /usr/local/cuda
@@ -62,7 +64,7 @@ RUN yum install -y \
 
 #### NVIDIA CUDA ####
 
-RUN yum install -y cuda-9-0
+RUN yum install -y cuda-9-0 --enablerepo=rhel-7-server-e4s-optional-rpms
 
 #### NVIDIA CUDNN ####
 
