@@ -6,7 +6,6 @@ USER root
 RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN yum clean all && yum repolist
 
---enablerepo=rhel-7-server-e4s-optional-rpms
 
 #### Default PATH ####
 
