@@ -1,4 +1,4 @@
-FROM s2i-minimal-notebook:3.6
+FROM docker-registry.default.svc:5000/jupyterhub-gpu/s2i-minimal-notebook:3.6
 
 USER root
 
