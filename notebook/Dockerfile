@@ -1,11 +1,6 @@
-FROM registry.access.redhat.com/rhel7:7.6
+FROM s2i-minimal-notebook:3.6
 
 USER root
-
-#### Packages ####
-RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-RUN yum clean all && yum repolist
-
 
 #### Default PATH ####
 
@@ -28,57 +23,17 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_REQUIRE_CUDA "cuda>=9.0"
 
 #### NVIDIA CUDA Runtime ####
+# required to install cuda : July 2019
+rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum update -y
+yum -y groupinstall "Development Tools"
+yum install -y pciutils dkms kernel-devel
 
-ENV CUDA_VERSION 9.0.176
-
-LABEL com.nvidia.cuda.version="${CUDA_VERSION}"
-
-ENV PATH /usr/local/nvidia/bin:/usr/local/cuda/bin:${PATH}
-
-ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
-
-RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/cuda/lib64" >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo "/usr/local/cuda/extras/CUPTI/lib64" >> /etc/ld.so.conf.d/nvidia.conf
-
-RUN NVIDIA_GPGKEY_SUM=d1be581509378368edeec8c1eb2958702feedf3bc3d17011adbf24efacce4ab5 && \
-    curl -fsSL https://developer.download.nvidia.com/compute/cuda/repos/rhel7/x86_64/7fa2af80.pub | sed '/^Version/d' > /etc/pki/rpm-gpg/RPM-GPG-KEY-NVIDIA && \
-    echo "$NVIDIA_GPGKEY_SUM  /etc/pki/rpm-gpg/RPM-GPG-KEY-NVIDIA" | sha256sum -c --strict -
-COPY cuda.repo /etc/yum.repos.d/cuda.repo
-
-ENV CUDA_PKG_VERSION 9-0-$CUDA_VERSION
-RUN yum install -y \
-        cuda-nvrtc-$CUDA_PKG_VERSION-1 \
-        cuda-nvgraph-$CUDA_PKG_VERSION-1 \
-        cuda-cusolver-$CUDA_PKG_VERSION-1 \
-        cuda-cublas-$CUDA_PKG_VERSION.3-1 \
-        cuda-cufft-$CUDA_PKG_VERSION-1 \
-        cuda-curand-$CUDA_PKG_VERSION-1 \
-        cuda-cusparse-$CUDA_PKG_VERSION-1 \
-        cuda-npp-$CUDA_PKG_VERSION-1 \
-        cuda-cudart-$CUDA_PKG_VERSION-1 && \
-    ln -s cuda-9.0 /usr/local/cuda && \
-    rm -rf /var/cache/yum/*
-
-#### NVIDIA CUDA ####
-
-RUN yum install -y cuda-9-0 --enablerepo=rhel-7-server-e4s-optional-rpms
-
-#### NVIDIA CUDNN ####
-
-COPY . /tmp/src
-
-RUN tar --no-same-owner -xzf /tmp/src/cudnn-9.0-linux-x64-v7.1.tgz -C /usr/local --wildcards 'cuda/lib64/libcudnn.so.*' && \
-    rm /tmp/src/cudnn-*.tgz && \
-    ldconfig
-
-#### S2I build ####
-
-RUN rm -rf /tmp/src/.git* && \
-    chown -R 1001 /tmp/src && \
-    chgrp -R 0 /tmp/src && \
-    chmod -R g+w /tmp/src
+# https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&target_distro=RHEL&target_version=7&target_type=rpmlocal
+wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
+sudo rpm -i cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
+sudo yum clean all
+sudo yum install cuda
 
 USER 1001
 
