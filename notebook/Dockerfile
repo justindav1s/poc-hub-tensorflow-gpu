@@ -33,6 +33,7 @@ RUN yum install -y pciutils dkms kernel-devel
 RUN wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
 RUN rpm -i cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
 RUN yum clean all
+RUN yum -y install e2fsprogs
 RUN chattr -i /usr/lib64/libcuda.so.418.67 && lsattr /usr/lib64/libcuda.so.418.67
 RUN chattr -i /usr/lib64/libnvidia-ml.so.418.67
 RUN chattr -i /usr/lib64/libnvidia-cfg.so.418.67
