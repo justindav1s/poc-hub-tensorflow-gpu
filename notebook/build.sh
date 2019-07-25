@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 
-. ../../env.sh
 
-oc login https://${IP}:8443 -u $USER
 
-dev_project=jpuyterhub-gpu
+dev_project=jupyterhub-gpu
 app_name=jupyterhub-nb-tfg
 git_url=https://github.com/justindav1s/poc-hub-tensorflow-gpu.git
 
 oc project ${dev_project}
 
-oc delete bc sso-gatekeeper-docker-build
+oc delete bc ${app_name}-docker-build
 
 oc process -f docker-build-template.yml \
     -p APPLICATION_NAME=${app_name} \

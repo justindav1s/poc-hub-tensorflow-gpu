@@ -3,7 +3,8 @@ FROM registry.access.redhat.com/rhel7:7.6
 USER root
 
 #### Packages ####
-RUN yum clean all && yum repolist && yum install -y epel-release
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN yum clean all && yum repolist
 
 #### Default PATH ####
 
