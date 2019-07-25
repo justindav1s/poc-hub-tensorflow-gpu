@@ -24,16 +24,16 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=9.0"
 
 #### NVIDIA CUDA Runtime ####
 # required to install cuda : July 2019
-rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum update -y
-yum -y groupinstall "Development Tools"
-yum install -y pciutils dkms kernel-devel
+RUN rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN yum update -y
+RUN yum -y groupinstall "Development Tools"
+RUN yum install -y pciutils dkms kernel-devel
 
 # https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&target_distro=RHEL&target_version=7&target_type=rpmlocal
-wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
-sudo rpm -i cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
-sudo yum clean all
-sudo yum install cuda
+RUN wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
+RUN sudo rpm -i cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
+RUN sudo yum clean all
+RUN sudo yum install cuda
 
 USER 1001
 
