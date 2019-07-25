@@ -65,7 +65,6 @@ parameters:
     from: "[a-f0-9]{32}"
     required: true
 objects:
-  -
   - kind: ConfigMap
     apiVersion: v1
     metadata:
@@ -76,14 +75,12 @@ objects:
       jupyterhub_config.py: "${JUPYTERHUB_CONFIG}"
       admin_users.txt: "${JUPYTERHUB_ADMIN_USERS}"
       user_whitelist.txt: "${JUPYTERHUB_ENROLLED_USERS}"
-
   - kind: ServiceAccount
     apiVersion: v1
     metadata:
       name: "${JUPYTERHUB_NAME}-hub"
       labels:
         app: "${JUPYTERHUB_NAME}"
-
   - kind: RoleBinding
     apiVersion: v1
     metadata:
@@ -95,14 +92,12 @@ objects:
         name: "${JUPYTERHUB_NAME}-hub"
     roleRef:
       name: edit
-
   - kind: ImageStream
     apiVersion: v1
     metadata:
       name: "${JUPYTERHUB_NAME}-hub-s2i"
       labels:
         app: "${JUPYTERHUB_NAME}"
-
   - kind: BuildConfig
     apiVersion: v1
     metadata:
@@ -128,14 +123,12 @@ objects:
         to:
           kind: ImageStreamTag
           name: "${JUPYTERHUB_NAME}-hub-s2i:latest"
-
   - kind: ImageStream
     apiVersion: v1
     metadata:
       name: "${JUPYTERHUB_NAME}-hub-img"
       labels:
         app: "${JUPYTERHUB_NAME}"
-
   - kind: BuildConfig
     apiVersion: v1
     metadata:
@@ -149,7 +142,7 @@ objects:
       source:
         type: Git
         git:
-          uri: https://github.com/justindav1s/poc-hub-tensorflow-gpu.git
+          uri: https://github.com/jupyter-on-openshift/poc-hub-keycloak-auth.git
         contextDir: jupyterhub
       strategy:
         type: Source
@@ -161,7 +154,6 @@ objects:
         to:
           kind: ImageStreamTag
           name: "${JUPYTERHUB_NAME}-hub-img:latest"
-
   - apiVersion: v1
     kind: Secret
     metadata:
@@ -170,7 +162,6 @@ objects:
         app: "${JUPYTERHUB_NAME}"
     stringData:
       password: "${DATABASE_PASSWORD}"
-
   - kind: DeploymentConfig
     apiVersion: v1
     metadata:
@@ -257,7 +248,6 @@ objects:
               configMap:
                 name: "${JUPYTERHUB_NAME}-cfg"
                 defaultMode: 420
-
   - kind: Service
     apiVersion: v1
     metadata:
@@ -277,7 +267,6 @@ objects:
       selector:
         app: "${JUPYTERHUB_NAME}"
         deploymentconfig: "${JUPYTERHUB_NAME}"
-
   - kind: Route
     apiVersion: v1
     metadata:
@@ -295,7 +284,6 @@ objects:
       tls:
         termination: edge
         insecureEdgeTerminationPolicy: Redirect
-
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
@@ -308,7 +296,6 @@ objects:
       resources:
         requests:
           storage: "${POSTGRESQL_VOLUME_SIZE}"
-
   - apiVersion: v1
     kind: DeploymentConfig
     metadata:
@@ -376,7 +363,6 @@ objects:
               namespace: openshift
           type: ImageChange
         - type: ConfigChange
-
   - kind: Service
     apiVersion: v1
     metadata:
@@ -392,14 +378,12 @@ objects:
       selector:
         app: "${JUPYTERHUB_NAME}"
         deploymentconfig: "${JUPYTERHUB_NAME}-db"
-
   - kind: ImageStream
     apiVersion: v1
     metadata:
       name: "${JUPYTERHUB_NAME}-nb-s2i"
       labels:
         app: "${JUPYTERHUB_NAME}"
-
   - kind: BuildConfig
     apiVersion: v1
     metadata:
@@ -418,13 +402,9 @@ objects:
       strategy:
         type: Source
         sourceStrategy:
-#          from:
-#            kind: DockerImage
-#            name: centos/python-35-centos7:latest
           from:
-            kind: ImageStreamTag
-            name: python:3.6
-            namespace: openshift
+            kind: DockerImage
+            name: centos/python-35-centos7:latest
           env:
             - name: JUPYTER_INSTALL_LAB
               value: "${JUPYTERLAB_ENABLED}"
@@ -435,14 +415,12 @@ objects:
       resources:
         limits:
           memory: 3Gi
-
   - kind: ImageStream
     apiVersion: v1
     metadata:
       name: "${JUPYTERHUB_NAME}-nb-tfg"
       labels:
         app: "${JUPYTERHUB_NAME}"
-
   - kind: BuildConfig
     apiVersion: v1
     metadata:
@@ -466,14 +444,12 @@ objects:
       resources:
         limits:
           memory: 3Gi
-
   - kind: ImageStream
     apiVersion: v1
     metadata:
       name: "${JUPYTERHUB_NAME}-nb-img"
       labels:
         app: "${JUPYTERHUB_NAME}"
-
   - kind: BuildConfig
     apiVersion: v1
     metadata:

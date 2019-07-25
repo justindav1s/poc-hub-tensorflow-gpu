@@ -16,3 +16,5 @@ done
 
 
 oc new-app jupyterhub-gpu.yml
+
+#oc new-app jupyterhub.json

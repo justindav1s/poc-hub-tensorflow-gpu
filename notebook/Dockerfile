@@ -1,4 +1,4 @@
-FROM myproject/minimal-notebook:latest
+FROM registry.access.redhat.com/rhel7:7.6
 
 USER root
 
