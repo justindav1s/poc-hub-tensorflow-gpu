@@ -15,3 +15,5 @@ RUN yum clean all
 RUN yum -y install cuda --enablerepo=rhel-7-server-e4s-optional-rpms
 
 USER 1001
+
+CMD ["nvidia-smi"]
