@@ -33,7 +33,7 @@ RUN yum install -y pciutils dkms kernel-devel
 RUN wget https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
 RUN rpm -i cuda-repo-rhel7-10-1-local-10.1.168-418.67-1.0-1.x86_64.rpm
 RUN yum clean all
-RUN yum install cuda
+RUN yum -y install cuda
 
 USER 1001
 
